@@ -247,44 +247,36 @@ router.post("/:id/:token", async (req, res) => {
 // Bulk email sending
 
 
-router.post("/bulkemailsend",authenticate,async (req, res) => {
+router.post("/bulkemailsend", authenticate, async (req, res) => {
+
     try {
-
-        // const mailOptions = {
-        //     sendgrid_key: process.env.SENDGRID_API_KEY,
-        //     from_email: '',
-        //     // from_name: 'FROM_NAME',
-        //     to: ['']
-        // };
-
-        // mailOptions.subject = '';
-        // mailOptions.content = '';
-        // sendgrid.send_via_sendgrid(mailOptions).then(response => {
-        //     console.log(response);
-        // });
-        
-        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-        const msg = {
-            to: ['example1@mail.com', 'example2@mail.com'], // replace these with your email addresses
-            from: 'Sadie Miller <sadie@thebigdonut.party>',
-            subject: '🍩 Donuts, at the big donut 🍩',
-            text: 'Fresh donuts are out of the oven. Get them while they’re hot!',
-            html: '<p>Fresh donuts are out of the oven. Get them while they’re <em>hot!</em></p>',
+        const { emails } = req.body;
+        const To_mails = emails.split(",");
+        const {subject} =req.body;
+        const {content} =req.body;
+        const mailOptions = {
+            from: process.env.EMAIL,
+            to: To_mails,
+            subject:subject,
+            mailcompose:content,
+            html:"<br/> Thanks and Regards <br/> Devan Sekar <br/> Fullstack Developer <br/> Chennai",
         };
 
-        sgMail.sendMultiple(msg).then(() => {
-            console.log('emails sent successfully!');
-        }).catch(error => {
-            console.log(error);
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log("error", error);
+                res.status(401).json({ status: 401, message: "email not send" });
+            } else {
+                console.log("Email sent", info.response);
+                res.status(201).json({ status: 201, message: "Email sent Succsfully" });
+            }
         });
 
 
     } catch (error) {
-        res.status(401).json({ status: 401, error })
+        res.status(401).json({ status: 401, error });
     }
-
-})
+});
 module.exports = router;
 
 
