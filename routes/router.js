@@ -252,13 +252,13 @@ router.post("/bulkemailsend", authenticate, async (req, res) => {
         const { emails } = req.body;
         const To_mails = emails.split(",");
         const {subject} =req.body;
-        const {content} =req.body;
+        const {text} =req.body;
         const mailOptions = {
             from: process.env.EMAIL,
             to: To_mails,
             subject:subject,
-            html:"<br/> Thanks and Regards <br/> Devan Sekar <br/> Fullstack Developer <br/> Chennai",
-            text:content
+            html: `${text}<br/><br/><br/>Thanks and Regards <br/> Devan Sekar <br/> Fullstack Developer <br/> Chennai`,
+            
         };
 
         transporter.sendMail(mailOptions, (error, info) => {
