@@ -133,7 +133,6 @@ router.get("/logout", authenticate, async (req, res) => {
         });
         // console.log(res)
         res.clearCookie("usercookie", { path: "/" });
-
         req.rootUser.save();
 
         res.status(201).json({ status: 201 })
@@ -258,8 +257,8 @@ router.post("/bulkemailsend", authenticate, async (req, res) => {
             from: process.env.EMAIL,
             to: To_mails,
             subject:subject,
-            mailcompose:content,
             html:"<br/> Thanks and Regards <br/> Devan Sekar <br/> Fullstack Developer <br/> Chennai",
+            text:content
         };
 
         transporter.sendMail(mailOptions, (error, info) => {
